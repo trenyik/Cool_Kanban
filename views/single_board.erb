@@ -1,0 +1,81 @@
+<head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<header>
+<h1>Get to work 😉</h1>
+</header>
+    <section class="dt dt--fixed">
+        <h2><%= matching_board.title %></h2>
+
+        <%matching_board.columns.each do |column|%>
+            <section class="dtc tc pv4 bg-light-blue vh-80 ba b--light-pink">
+                <h1 class="bb b--light-pink bw3 "><%=column.name%></h1>
+                <form id="_<%=column.name%>" action="/boards/<%=matching_board.id%>/columns/<%=column.id%>/tasks" method="POST">
+                    <input name="text" type="text" placeholder="Enter a task" />
+                    <button type="submit">Add</button>
+                </form>
+
+                <ul  class="list pl0 ml0 center mw6 br2 overflow-scroll">
+                    <%column.tasks.each do |task|%>
+                    <a  href="/task/<%= task.id %>/delete">&times;</a>
+                        <li><%= task.text %></li>
+                        
+                    <%end%>
+                    
+                </ul>
+            </section>
+        <%end%>
+
+    </section>
+             
+    <script>
+        const ws = new WebSocket("ws://localhost:9292/board/<%= matching_board.id %>/socket")
+
+
+        function addText(textData) {
+            const [id,column_id,text,user_id] = textData.split("|")
+            if (column_id == <%= matching_board.columns[0].id %>) {
+                console.log('here')
+                $(`#to-do`).append(`<p class="pa3 ma2 br4" id="${id}">${text}</p>`)
+            } else if (column_id == <%= matching_board.columns[1].id %>) {
+                $(`#doing`).append(`<p class="pa3 ma2 br4" id="${id}">${text}</p>`)
+            } else if (column_id == <%= matching_board.columns[2].id %>) {
+                $(`#done`).append(`<p class="pa3 ma2 br4" id="${id}">${text}</p>`)
+            }
+            console.log('exited')
+            
+
+            // const messages = document.getElementById(status)
+            // messages.scrollIntoView({block: "end"})
+        }
+
+        ws.onmessage = function (text) {
+            addText(text.data)
+        }
+        
+
+        $('#to-do').on("submit", e => {
+            e.preventDefault()
+            console.log("to-do");
+            const text = $('#to-do-input').val()
+            $('#to-do-input').val("").focus()
+            ws.send(`create<*><%= matching_board.columns[0].id %>|${text}|1|to-do`)
+        })
+
+        $('#doing').on("submit", e => {
+            e.preventDefault()
+            console.log("doing");
+            const text = $('#doing-input').val()
+            $('#doing-input').val("").focus()
+            ws.send(`create<*><%= matching_board.columns[1].id %>|${text}|1|doing`)
+        })
+
+        $('#done').on("submit", e => {
+            e.preventDefault()
+            console.log("done");
+            const text = $('#done-input').val()
+            $('#done-input').val("").focus()
+            ws.send(`create<*><%= matching_board.columns[2].id %>|${text}|1|done`)
+        })
+    </script>

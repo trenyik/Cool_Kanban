@@ -1,0 +1,24 @@
+<h2>Welcome to Cool-KanBan Board!</h2>
+<main>
+    <%boards.each do |board|%>
+        <a class="h10 w5 dib ma2 bg-light-blue white br2 " href="/board/<%=board.id%>"><%=board.title%></a>
+        <a  href="/boards/<%=board.id%>/delete">&times;</a>
+    <%end%>
+    
+    <a class="h8 w8 dib ma5 bg-light-pink light-green br2 pa2">
+        <form method="POST" action="/boards">
+            <input name="title" required/>
+            <button type="submit" class="bg-white ba1 pa2 dark-blue">Add Board</button>
+        </form>
+    </a>
+</main>
+<script>
+    var closebtns = document.getElementsByClassName("close");
+    var i;
+
+    for (i = 0; i < closebtns.length; i++) {
+    closebtns[i].addEventListener("click", function() {
+        this.parentElement.style.display = 'none';
+    });
+    }
+</script>
