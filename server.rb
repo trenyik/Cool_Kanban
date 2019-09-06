@@ -5,7 +5,7 @@ require './lib/user'
 require './lib/board'
 require './lib/task'
 require './lib/column'
-require 'pry'
+
 
 
 
