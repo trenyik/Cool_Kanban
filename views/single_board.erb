@@ -1,29 +1,59 @@
 <head>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$ (function(){
+
+    $( ".drag_task" ).draggable({scroll: false});
+    $( ".drop_column" ).droppable({
+        classes: {
+            "ui-droppable-hover": "bg-pink"
+        },
+        drop: function(event, ui) {
+           console.log(event.target.id)
+           console.log(ui.draggable.attr('id'))
+
+           const column_id = event.target.id.split("-").pop()
+           const task_id = ui.draggable.attr('id').split("-").pop()
+
+           console.log(column_id)
+           console.log(task_id)
+           $.post(`/tasks/${task_id}/change_column/${column_id}`)
+        }
+    });
+});
+</script>
+
+
+
 </head>
 
 <header>
 <h1>Get to work 😉</h1>
 </header>
     <section class="dt dt--fixed">
-        <h2><%= matching_board.title %></h2>
+        <a href="/boards"><%= matching_board.title %></a>
 
         <%matching_board.columns.each do |column|%>
-            <section class="dtc tc pv4 bg-light-blue vh-80 ba b--light-pink">
-                <h1 class="bb b--light-pink bw3 "><%=column.name%></h1>
+            <section class="dtc tc pv4 bg-light-blue vh-80 ba b--light-pink drop_column" id="column-<%=column.id%>">
+                <h1 class="bb b--light-pink bw2 "><%=column.name%></h1>
                 <form id="_<%=column.name%>" action="/boards/<%=matching_board.id%>/columns/<%=column.id%>/tasks" method="POST">
                     <input name="text" type="text" placeholder="Enter a task" />
                     <button type="submit">Add</button>
                 </form>
-
+                
                 <ul  class="list pl0 ml0 center mw6 br2 overflow-scroll">
                     <%column.tasks.each do |task|%>
+                   <div class="drag_task" id="task-<%= task.id %>">
                     <a  href="/task/<%= task.id %>/delete">&times;</a>
                         <li><%= task.text %></li>
-                        
-                    <%end%>
                     
+                    <%end%>
+
+                    </div>
                 </ul>
+                
             </section>
         <%end%>
 

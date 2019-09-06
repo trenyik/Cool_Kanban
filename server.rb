@@ -6,7 +6,7 @@ require './lib/board'
 require './lib/task'
 require './lib/column'
 
-
+require 'pry'
 
 
 class Server < Sinatra::Base
@@ -28,6 +28,12 @@ class Server < Sinatra::Base
         Task.create(title: title, status: status, text: text, user_id: user_id, column_id: column_id.to_i )
         board_that_we_found = Board.find(board_id)
         erb :single_board, :locals => { matching_board: board_that_we_found }
+    end
+
+    get "/boards" do
+
+        erb :boards, :locals => { boards: Board.all }
+
     end
 
     post "/boards" do
@@ -92,5 +98,11 @@ class Server < Sinatra::Base
         task_we_are_about_to_delete.destroy
         
         erb :single_board, :locals => { matching_board: board_we_should_use }
+      end
+
+      post "/tasks/:task_id/change_column/:column_id" do |task_id, column_id|
+        task = Task.find(task_id)
+        task.update(column_id: column_id, status: task.column.name)
+        
       end
 end
