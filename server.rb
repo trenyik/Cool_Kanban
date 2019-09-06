@@ -6,7 +6,9 @@ require './lib/board'
 require './lib/task'
 require './lib/column'
 
-require 'pry'
+unless ENV["production"]
+    require 'pry'
+end
 
 
 class Server < Sinatra::Base
@@ -100,9 +102,8 @@ class Server < Sinatra::Base
         erb :single_board, :locals => { matching_board: board_we_should_use }
       end
 
-      post "/tasks/:task_id/change_column/:column_id" do |task_id, column_id|
+      post "/boards/:board_id/tasks/:task_id/change_column/:column_id" do |board_id,task_id, column_id|
         task = Task.find(task_id)
         task.update(column_id: column_id, status: task.column.name)
-        
       end
 end
