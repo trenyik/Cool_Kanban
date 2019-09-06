@@ -6,11 +6,6 @@ require './lib/board'
 require './lib/task'
 require './lib/column'
 
-unless ENV["production"]
-    require 'pry'
-end
-
-
 class Server < Sinatra::Base
     
     enable :sessions
