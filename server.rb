@@ -85,16 +85,9 @@ class Server < Sinatra::Base
         erb :boards, :locals => { boards: Board.all }
       end
 # 
-      get "/task/:task_id/delete" do |task_id|
-        task_we_are_about_to_delete = Task.find(task_id)
-        # Task.find(task_id).destroy
-        column_of_the_task_we_will_delete = task_we_are_about_to_delete.column
-        board_we_should_use = column_of_the_task_we_will_delete.board
-
-        # binding.pry
-        task_we_are_about_to_delete.destroy
-        
-        erb :single_board, :locals => { matching_board: board_we_should_use }
+      get "/boards/:board_id/task/:task_id/delete" do |board_id, task_id|
+        Task.delete(task_id)
+        erb :single_board, :locals => { matching_board: Board.find(board_id) }
       end
 
       post "/boards/:board_id/tasks/:task_id/change_column/:column_id" do |board_id,task_id, column_id|

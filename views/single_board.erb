@@ -15,7 +15,7 @@
                 <ul class="list pa2 ml0 center mw6 br2">
                     <%column.tasks.each do |task|%>
                         <li class="drag_task bg-white" id="task-<%= task.id %>">
-                            <a href="/task/<%= task.id %>/delete">&times;</a>
+                            <a href="/boards/<%=matching_board.id%>/task/<%= task.id %>/delete">&times;</a>
                             <%= task.text %>
                         </li>
                     <%end%>
