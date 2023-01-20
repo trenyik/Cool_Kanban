@@ -11,7 +11,7 @@ gem "rake", "~> 12.3"
 gem "sinatra-websocket", "~> 0.3.1"
 
 gem "sinatra", "~> 2.0"
-gem "activerecord", "~> 5.2"
+gem "activerecord", "~> 6.1"
 gem "sinatra-activerecord", "~> 2.0"
 
 
